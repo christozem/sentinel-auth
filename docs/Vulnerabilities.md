@@ -13,3 +13,20 @@ for educational and demonstration purposes.
 
 ## Notes
 These issues will be exploited and fixed in later phases.
+
+User data is stored in memory, so restarting the server clears all accounts.
+
+
+
+## Broken Authentication – JWT Misuse
+
+The application issues long-lived JWT tokens (30 days)
+with sensitive authorization data embedded in the payload.
+
+### Impact
+- Stolen tokens remain valid for long periods
+- No server-side session invalidation
+- Privilege escalation possible if token is modified or reused
+
+### OWASP Reference
+- A07:2021 – Identification and Authentication Failures
