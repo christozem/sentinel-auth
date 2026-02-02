@@ -30,3 +30,17 @@ with sensitive authorization data embedded in the payload.
 
 ### OWASP Reference
 - A07:2021 – Identification and Authentication Failures
+
+
+
+## Broken Access Control
+
+The admin endpoint does not verify user privileges.
+Any unauthenticated user can access sensitive data.
+
+### Impact
+- Unauthorized access to admin functions
+- Sensitive data exposure
+
+### OWASP Reference
+- A01:2021 – Broken Access Control

@@ -23,9 +23,11 @@ app.post("/login", async (req, res) => {
   if (!match) return res.status(401).json({ error: "Wrong password" });
 
   const token = jwt.sign(
-    { username: user.username, role: user.role },
+    { username: user.username, role: user.role,
+        isAdmin: true // intentional mistake
+     },
     "secret123", // intentionally bad
-    { expiresIn: "7d" }
+    { expiresIn: "30d" } // way to long
   );
 
   res.json({ token });
@@ -33,6 +35,12 @@ app.post("/login", async (req, res) => {
 
 app.get("/profile", (req, res) => {
   res.json({ message: "This is your profile" });
+});
+app.get("/admin", (req, res) => {
+  res.json({
+    secretData: "Admin dashboard data",
+    message: "Welcome admin"
+  });
 });
 
 app.listen(3000, () => {
