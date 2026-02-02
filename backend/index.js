@@ -33,10 +33,29 @@ app.post("/login", async (req, res) => {
   res.json({ token });
 });
 
+
+function verifyToken(req, res, next) {
+  const header = req.headers["authorization"];
+
+  if (!header) {
+    return res.status(401).json({ error: "No token provided" });
+  }
+
+  const token = header.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, "secret123");
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: "Invalid token" });
+  }
+}
+
 app.get("/profile", (req, res) => {
   res.json({ message: "This is your profile" });
 });
-app.get("/admin", (req, res) => {
+app.get("/admin",verifyToken, (req, res) => {
   res.json({
     secretData: "Admin dashboard data",
     message: "Welcome admin"
