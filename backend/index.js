@@ -55,12 +55,21 @@ function verifyToken(req, res, next) {
 app.get("/profile", (req, res) => {
   res.json({ message: "This is your profile" });
 });
-app.get("/admin",verifyToken, (req, res) => {
+app.get("/admin", verifyToken, (req, res) => {
+  const user = users.find(
+    u => u.username === req.user.username
+  );
+
+  if (!user || user.role !== "admin") {
+    return res.status(403).json({ error: "Admins only" });
+  }
+
   res.json({
     secretData: "Admin dashboard data",
     message: "Welcome admin"
   });
 });
+
 
 app.listen(3000, () => {
   console.log("Server running on port 3000");
