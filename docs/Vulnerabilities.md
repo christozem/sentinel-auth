@@ -44,3 +44,50 @@ Any unauthenticated user can access sensitive data.
 
 ### OWASP Reference
 - A01:2021 – Broken Access Control
+
+
+## Missing Security Event Logging
+
+The application initially blocked unauthorized access attempts
+without recording them.
+
+This meant attackers could repeatedly attempt access without
+detection or investigation capability.
+
+### Impact
+- No trace of attack attempts
+- Harder incident investigation
+- Attack patterns cannot be analyzed
+
+### Fix Implemented
+Security event logging was added for:
+- Invalid token usage
+- Unauthorized admin access attempts
+- Successful admin access
+
+### OWASP Reference
+A09:2021 – Security Logging and Monitoring Failures
+
+
+## JWT Privilege Escalation via Role Trust
+
+The server previously trusted role information stored
+inside JWT tokens.
+
+An attacker could modify the token payload and escalate
+privileges to administrator level.
+
+### Impact
+- Unauthorized admin access
+- Sensitive data exposure
+- Full system control possible
+
+### Fix Implemented
+Server now validates user roles using server-side data
+instead of trusting token contents.
+
+Role is verified against stored user records before
+granting admin access.
+
+### OWASP Reference
+A01:2021 – Broken Access Control
