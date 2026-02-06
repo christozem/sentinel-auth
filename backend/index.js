@@ -6,6 +6,9 @@ const app = express();
 app.use(express.json());
 
 const users = []; // fake database
+function logSecurityEvent(message) {
+  console.log("[SECURITY]", new Date().toISOString(), message);
+}
 
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
@@ -48,8 +51,10 @@ function verifyToken(req, res, next) {
     req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ error: "Invalid token" });
-  }
+  logSecurityEvent("Invalid token used");
+  return res.status(401).json({ error: "Invalid token" });
+}
+
 }
 
 app.get("/profile", (req, res) => {
@@ -61,8 +66,12 @@ app.get("/admin", verifyToken, (req, res) => {
   );
 
   if (!user || user.role !== "admin") {
-    return res.status(403).json({ error: "Admins only" });
-  }
+  logSecurityEvent(
+    `Unauthorized admin access attempt by ${req.user.username}`
+  );
+  return res.status(403).json({ error: "Admins only" });
+}
+logSecurityEvent(`Admin access granted to ${user.username}`);
 
   res.json({
     secretData: "Admin dashboard data",
