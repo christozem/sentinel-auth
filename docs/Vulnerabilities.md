@@ -91,3 +91,23 @@ granting admin access.
 
 ### OWASP Reference
 A01:2021 – Broken Access Control
+
+
+
+## Brute Force Login Vulnerability
+
+The login endpoint originally allowed unlimited authentication
+attempts, enabling brute-force password attacks.
+
+### Impact
+- Attackers could guess passwords automatically
+- User accounts could be compromised
+- No restriction on login attempts
+
+### Fix Implemented
+Rate limiting was added to restrict repeated login attempts
+within a short time window.
+
+### OWASP Reference
+A07:2021 – Identification and Authentication Failures
+
