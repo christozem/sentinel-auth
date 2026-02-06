@@ -1,6 +1,13 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const rateLimit = require("express-rate-limit");
+
+const loginLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 5, // only 5 login attempts allowed
+  message: { error: "Too many login attempts. Try again later." }
+});
 
 const app = express();
 app.use(express.json());
@@ -17,7 +24,7 @@ app.post("/register", async (req, res) => {
   res.json({ message: "User registered" });
 });
 
-app.post("/login", async (req, res) => {
+app.post("/login", loginLimiter, async (req, res) => {
   const { username, password } = req.body;
   const user = users.find(u => u.username === username);
   if (!user) return res.status(401).json({ error: "No user" });
