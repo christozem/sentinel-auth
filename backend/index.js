@@ -12,15 +12,33 @@ const loginLimiter = rateLimit({
 const app = express();
 app.use(express.json());
 
-const users = []; // fake database
+
 function logSecurityEvent(message) {
   console.log("[SECURITY]", new Date().toISOString(), message);
 }
+
+const fs = require("fs");
+const path = require("path");
+
+const usersFile = path.join(__dirname, "data/users.json");
+
+function loadUsers() {
+  if (!fs.existsSync(usersFile)) return [];
+  return JSON.parse(fs.readFileSync(usersFile));
+}
+
+function saveUsers(users) {
+  fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
+}
+
+const users = loadUsers();
 
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
   const hashed = await bcrypt.hash(password, 4); // intentionally weak
   users.push({ username, password: hashed, role: "user" });
+saveUsers(users);
+
   res.json({ message: "User registered" });
 });
 
